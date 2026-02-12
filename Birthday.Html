@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You, Vodina ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --rose-gold: #e0a39a; --dark: #0a0a0a; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--dark);
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- INTRO SCREEN --- */
+        #intro {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; display: flex; flex-direction: column;
+            justify-content: flex-start; align-items: center; background: #000;
+            padding-top: 15vh;
+        }
+
+        #intro h2 {
+            font-family: 'Playfair Display', serif; font-size: 2.2rem;
+            color: var(--rose-gold); text-align: center; max-width: 85%;
+        }
+
+        #yesBtn {
+            background: var(--rose-gold); color: black; border: none;
+            padding: 18px 60px; font-size: 20px; font-weight: 800;
+            cursor: pointer; border-radius: 50px; position: absolute;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            top: 60%; left: 50%; transform: translateX(-50%);
+            z-index: 10001;
+        }
+
+        /* --- MAIN CONTENT --- */
+        #mainContent { display: none; position: relative; z-index: 10; }
+
+        .hero-section {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        #wishText {
+            font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 8vw, 4.5rem);
+            color: var(--rose-gold); margin-bottom: 20px;
+        }
+
+        #subText { font-size: 1.1rem; max-width: 600px; font-weight: 300; line-height: 1.8; padding: 0 25px; font-style: italic; color: #ddd;}
+
+        /* --- PHOTO GRID --- */
+        .gallery-wrap {
+            padding: 100px 8%; display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 50px;
+            perspective: 1000px;
+        }
+
+        .img-container {
+            border-radius: 20px; overflow: hidden; height: 480px;
+            background: #111; border: 1px solid rgba(224, 163, 154, 0.2);
+            opacity: 0; transform: translateX(-50px) rotateY(-15deg) scale(0.9);
+            transition: all 1s ease-out;
+        }
+
+        .img-container.reveal { opacity: 1; transform: translateX(0) rotateY(0) scale(1); }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- FINAL SECTION --- */
+        #finalSection {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            opacity: 0; transition: opacity 2s ease;
+        }
+
+        .final-wish {
+            font-family: 'Dancing Script', cursive; font-size: 3.5rem;
+            color: var(--rose-gold); text-shadow: 0 0 25px rgba(224, 163, 154, 0.5);
+        }
+
+        /* --- COLOUR PAPERS (CONFETTI) --- */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            z-index: 99999; /* Super high z-index to show on top */
+            pointer-events: none;
+            animation: confetti-fall 4s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="intro">
+    <h2 id="questionText">A little something for someone special... ✨</h2>
+    <button id="yesBtn">Click Me! 😍</button>
+</div>
+
+<div id="mainContent">
+    <section class="hero-section">
+        <h1 id="wishText"></h1>
+        <p id="subText"></p>
+    </section>
+
+    <div class="gallery-wrap">
+        <div class="img-container"><img src="1.jpeg"></div>
+        <div class="img-container"><img src="2.jpeg"></div>
+        <div class="img-container"><img src="3.jpeg"></div>
+        <div class="img-container"><img src="4.jpeg"></div>
+        <div class="img-container"><img src="5.jpeg"></div>
+        <div class="img-container"><img src="6.jpeg"></div>
+        <div class="img-container"><img src="7.jpeg"></div>
+        <div class="img-container"><img src="8.jpeg"></div>
+        <div class="img-container"><img src="9.jpeg"></div>
+        <div class="img-container"><img src="10.jpeg"></div>
+        <div class="img-container"><img src="11.jpeg"></div>
+        <div class="img-container"><img src="12.jpeg"></div>
+        <div class="img-container"><img src="13.jpeg"></div>
+        <div class="img-container"><img src="14.jpeg"></div>
+        <div class="img-container"><img src="15.jpeg"></div>
+        <div class="img-container"><img src="16.jpeg"></div>
+        <div class="img-container"><img src="17.jpeg"></div>
+        <div class="img-container"><img src="18.png"></div>
+    </div>
+
+    <div id="finalSection">
+        <h2 class="final-wish">Once again Happy Birthday Vodina! 🎂❤️</h2>
+    </div>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="song.mpeg" type="audio/mpeg">
+</audio>
+
+<script>
+    let moveCount = 0;
+    const yesBtn = document.getElementById('yesBtn');
+    const questionText = document.getElementById('questionText');
+
+    yesBtn.addEventListener('click', () => {
+        if (moveCount < 2) {
+            let x = Math.random() * (window.innerWidth - 180);
+            let y = (Math.random() * (window.innerHeight * 0.3)) + (window.innerHeight * 0.55); 
+            yesBtn.style.left = x + 'px';
+            yesBtn.style.top = y + 'px';
+            yesBtn.style.transform = 'none';
+            
+            let texts = ["Wait, are you ready? 🤔", "Pattuko chuddam! 😂"];
+            questionText.innerText = texts[moveCount];
+            moveCount++;
+        } else {
+            yesBtn.style.display = 'none';
+            startEverything();
+            document.getElementById("bgMusic").play().catch(e => console.log("Audio blocked"));
+        }
+    });
+
+    // --- RE-WRITTEN CONFETTI GENERATOR ---
+    function spawnConfetti() {
+        const colors = ['#ff0a54', '#ff70a6', '#ff9770', '#ffd670', '#e9ff70', '#70ffad', '#70d6ff', '#b794f4'];
+        const confettiCount = 10; // Number of papers per spawn
+        
+        for(let i=0; i < confettiCount; i++) {
+            const paper = document.createElement('div');
+            paper.className = 'confetti';
+            
+            // Random styling
+            paper.style.left = Math.random() * 100 + 'vw';
+            paper.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            paper.style.width = (Math.random() * 10 + 7) + 'px';
+            paper.style.height = (Math.random() * 12 + 8) + 'px';
+            paper.style.top = '-20px';
+            
+            // Random duration
+            const duration = (Math.random() * 2 + 2) + 's';
+            paper.style.animationDuration = duration;
+            
+            document.body.appendChild(paper);
+            
+            // Cleanup
+            setTimeout(() => { paper.remove(); }, 4000);
+        }
+    }
+
+    function startEverything() {
+        document.getElementById("intro").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        
+        // Start throwing papers immediately
+        setInterval(spawnConfetti, 350); 
+        
+        typeSequence();
+    }
+
+    function typeSequence() {
+        let main = "Happy Birthday Vodina! ❤️";
+        let sub = "To Vodina... Thanks for being more like a sister and a best friend to me. May your year be as wonderful as you are! Keep smiling with your closeup smile! ✨";
+        let i = 0;
+
+        function typeMain() {
+            if (i < main.length) {
+                document.getElementById("wishText").innerHTML += main.charAt(i);
+                i++; setTimeout(typeMain, 80);
+            } else {
+                i = 0; setTimeout(typeSub, 500);
+            }
+        }
+        function typeSub() {
+            if (i < sub.length) {
+                document.getElementById("subText").innerHTML += sub.charAt(i);
+                i++; setTimeout(typeSub, 40);
+            } else {
+                setTimeout(() => { 
+                    document.body.style.overflow = "auto"; 
+                    autoScroll(); 
+                }, 1500);
+            }
+        }
+        typeMain();
+    }
+
+    function autoScroll() {
+        const boxes = document.querySelectorAll('.img-container');
+        const finalSec = document.getElementById('finalSection');
+        let slideTimer = setInterval(function(){
+            window.scrollBy(0, 1.5);
+            boxes.forEach(box => {
+                if(box.getBoundingClientRect().top < window.innerHeight - 50) box.classList.add('reveal');
+            });
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 120) {
+                finalSec.style.opacity = "1";
+                clearInterval(slideTimer);
+            }
+        }, 20);
+    }
+</script>
+</body>
+</html>
